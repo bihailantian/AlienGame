@@ -6,3 +6,4 @@ import os
 path = os.path.abspath('..')
 print(os.path.abspath('..'))
 print(path)
+print("hello")
