@@ -100,12 +100,23 @@ def create_fleet(ai_settings, screen, aliens):
     """
     alien = Alien(ai_settings, screen)
     alien_width = alien.rect.width
-    available_space_x = ai_settings.screen_width - 2 * alien_width
-    number_aliens_x = int(available_space_x / (2 * alien_width))
+    number_aliens_x = get_number_aliens_x(ai_settings, alien_width)
 
     # 创建第一行外星人
     for alien_number in range(number_aliens_x):
-        alien = Alien(ai_settings, screen)
-        alien.x = alien_width + 2 * alien_width * alien_number
-        alien.rect.x = alien.x
-        aliens.add(alien)
+        create_alien(ai_settings, alien_number, aliens, screen)
+
+
+def create_alien(ai_settings, alien_number, aliens, screen):
+    alien = Alien(ai_settings, screen)
+    alien_width = alien.rect.width
+    alien.x = alien_width + 2 * alien_width * alien_number
+    alien.rect.x = alien.x
+    aliens.add(alien)
+
+
+def get_number_aliens_x(ai_settings, alien_width):
+    """计算每行可容纳多少个外星人"""
+    available_space_x = ai_settings.screen_width - 2 * alien_width
+    number_aliens_x = int(available_space_x / (2 * alien_width))
+    return number_aliens_x
