@@ -34,6 +34,9 @@ def check_keydown_events(event, ship, ai_settings, screen, bullets, stats, play_
     :param ai_settings: 设置对象
     :param screen: 屏幕
     :param bullets: 子弹编组
+    :param stats: 状态
+    :param play_button: 开始按钮
+    :param aliens: 外星人群
     """
     if event.key == pygame.K_RIGHT:
         ship.move_right = True
@@ -124,7 +127,7 @@ def update_screen(ai_settings, screen, ship, bullets, aliens, stats, play_button
     pygame.display.flip()
 
 
-def update_bullets(ai_settings, screen, ship, aliens, bullets):
+def update_bullets(ai_settings, screen, ship, aliens, bullets, stats, sb):
     """更新子弹位置并删除消失在屏幕的子弹"""
     bullets.update()
     # 删除已消失的子弹
@@ -132,11 +135,17 @@ def update_bullets(ai_settings, screen, ship, aliens, bullets):
         if bullet.rect.bottom < 0:
             bullets.remove(bullet)
     # print(len(bullets))
-    check_bullet_alien_collisions(ai_settings, aliens, bullets, screen, ship)
+    check_bullet_alien_collisions(ai_settings, aliens, bullets, screen, ship, stats, sb)
 
 
-def check_bullet_alien_collisions(ai_settings, aliens, bullets, screen, ship):
+def check_bullet_alien_collisions(ai_settings, aliens, bullets, screen, ship, stats, sb):
+    # 删除发生碰撞的子弹和外星人
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    if collisions:
+        for aliens in collisions.values():
+            stats.score += ai_settings.alien_points * len(aliens)
+            sb.prep_score()
+
     # print(collisions)
     if len(aliens) == 0:
         # 删除现有的子弹，加快游戏节奏，并创建一群新的外星人
