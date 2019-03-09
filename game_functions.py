@@ -9,25 +9,19 @@ from alien import Alien
 from bullet import Bullet
 
 
-def check_events(ship, ai_settings, screen, bullets):
-    """响应按键和鼠标事件"""
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-
-        elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, ship, ai_settings, screen, bullets)
-
-        elif event.type == pygame.KEYUP:
-            check_keyup_events(event, ship)
-
-
 def check_keyup_events(event, ship):
     """响应松开"""
     if event.key == pygame.K_RIGHT:
         ship.move_right = False
     elif event.key == pygame.K_LEFT:
         ship.move_left = False
+
+
+def fire_bullet(bullets, ai_settings, screen, ship):
+    """发射子弹"""
+    if len(bullets) < ai_settings.bullet_allowed:
+        new_bullet = Bullet(ai_settings, screen, ship)
+        bullets.add(new_bullet)
 
 
 def check_keydown_events(event, ship, ai_settings, screen, bullets):
@@ -46,6 +40,19 @@ def check_keydown_events(event, ship, ai_settings, screen, bullets):
         ship.move_left = True
     elif event.key == pygame.K_SPACE:
         fire_bullet(bullets, ai_settings, screen, ship)
+
+
+def check_events(ship, ai_settings, screen, bullets):
+    """响应按键和鼠标事件"""
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+
+        elif event.type == pygame.KEYDOWN:
+            check_keydown_events(event, ship, ai_settings, screen, bullets)
+
+        elif event.type == pygame.KEYUP:
+            check_keyup_events(event, ship)
 
 
 def update_screen(ai_settings, screen, ship, bullets, aliens):
@@ -83,42 +90,6 @@ def update_bullets(bullets):
     # print(len(bullets))
 
 
-def fire_bullet(bullets, ai_settings, screen, ship):
-    """发射子弹"""
-    if len(bullets) < ai_settings.bullet_allowed:
-        new_bullet = Bullet(ai_settings, screen, ship)
-        bullets.add(new_bullet)
-
-
-def create_fleet(ai_settings, screen, aliens, ship):
-    """
-    创建外星人群
-
-    :param ai_settings: 设置
-    :param screen: 屏幕
-    :param aliens: 外星人
-    """
-    alien = Alien(ai_settings, screen)
-    alien_width = alien.rect.width
-    number_aliens_x = get_number_aliens_x(ai_settings, alien_width)
-    number_rows = get_number_rows(ai_settings, alien.rect.height, ship.rect.height)
-    # 创建第一群外星人
-    for number_row in range(number_rows):
-        for alien_number in range(number_aliens_x):
-            create_alien(ai_settings, alien_number, aliens, screen, number_row)
-
-
-def create_alien(ai_settings, alien_number, aliens, screen, number_row):
-    alien = Alien(ai_settings, screen)
-    alien_width = alien.rect.width
-    alien_height = alien.rect.height
-    alien.x = alien_width + 2 * alien_width * alien_number
-    alien.y = alien_height + 2 * alien_height * number_row
-    alien.rect.x = alien.x
-    alien.rect.y = alien.y
-    aliens.add(alien)
-
-
 def get_number_aliens_x(ai_settings, alien_width):
     """
     计算每行可容纳多少个外星人
@@ -148,3 +119,52 @@ def get_number_rows(ai_settings, alien_height, ship_height):
     number_rows = int(available_space_y / (2 * alien_height))
     print("number_rows=", number_rows)
     return number_rows
+
+
+def create_alien(ai_settings, alien_number, aliens, screen, number_row):
+    alien = Alien(ai_settings, screen)
+    alien_width = alien.rect.width
+    alien_height = alien.rect.height
+    alien.x = alien_width + 2 * alien_width * alien_number
+    alien.y = alien_height + 2 * alien_height * number_row
+    alien.rect.x = alien.x
+    alien.rect.y = alien.y
+    aliens.add(alien)
+
+
+def create_fleet(ai_settings, screen, aliens, ship):
+    """
+    创建外星人群
+
+    :param ai_settings: 设置
+    :param screen: 屏幕
+    :param aliens: 外星人
+    """
+    alien = Alien(ai_settings, screen)
+    alien_width = alien.rect.width
+    number_aliens_x = get_number_aliens_x(ai_settings, alien_width)
+    number_rows = get_number_rows(ai_settings, alien.rect.height, ship.rect.height)
+    # 创建第一群外星人
+    for number_row in range(number_rows):
+        for alien_number in range(number_aliens_x):
+            create_alien(ai_settings, alien_number, aliens, screen, number_row)
+
+
+def change_fleet_direction(ai_settings, aliens):
+    """改变外星人的移动方向"""
+    for alien in aliens.sprites():
+        alien.rect.y += ai_settings.fleet_drop_speed
+    ai_settings.fleet_direction *= -1
+
+
+def check_fleet_edges(ai_settings, aliens):
+    """有外星人到达边缘时采取相应的措施"""
+    for alien in aliens.sprites():
+        if alien.check_edges():
+            change_fleet_direction(ai_settings, aliens)
+            break
+
+
+def update_aliens(ai_settings, aliens):
+    check_fleet_edges(ai_settings, aliens)
+    aliens.update()
