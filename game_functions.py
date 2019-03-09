@@ -58,21 +58,28 @@ def check_events(ship, ai_settings, screen, bullets):
             check_keyup_events(event, ship)
 
 
-def update_screen(ai_settings, screen, ship, bullets, aliens):
+def update_screen(ai_settings, screen, ship, bullets, aliens, stats, play_button):
     """
     更新屏幕上的图像，并切换到新屏幕
+
 
     :param ai_settings: 设置对象
     :param screen:  屏幕
     :param ship: 飞船对象
     :param bullets: 子弹编组
     :param aliens: 外星人
+    :param stats: 状态
+    :param play_button: play按钮
     """
 
     # 每次循环时都重绘屏幕
     screen.fill(ai_settings.bg_color)
     ship.blitme()
     aliens.draw(screen)
+
+    # 如果游戏处于非活动状态，就绘制Play按钮
+    if not stats.game_active:
+        play_button.draw_button()
 
     # 在飞船和外星人后面重绘所有子弹
     for bullet in bullets.sprites():
