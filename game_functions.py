@@ -45,13 +45,23 @@ def check_keydown_events(event, ship, ai_settings, screen, bullets):
         sys.exit()
 
 
-def check_play_button(stats, play_button, mouse_x, mouse_y):
+def check_play_button(stats, play_button, mouse_x, mouse_y, aliens, bullets, ai_settings, screen,
+                      ship):
     """在玩家单击Play按钮时开始新游戏"""
     if play_button.rect.collidepoint(mouse_x, mouse_y):
+        # 重置游戏统计信息
+        stats.reset_stats()
         stats.game_active = True
+        # 清空外星人列表和子弹列表
+        aliens.empty()
+        bullets.empty()
+
+        # 创建一群新的外星人，并将飞船放到屏幕底端中央
+        create_fleet(ai_settings, screen, aliens, ship)
+        ship.center_ship()
 
 
-def check_events(ship, ai_settings, screen, bullets, stats, play_button):
+def check_events(ship, ai_settings, screen, bullets, stats, play_button, aliens):
     """响应按键和鼠标事件"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -65,7 +75,8 @@ def check_events(ship, ai_settings, screen, bullets, stats, play_button):
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(stats, play_button, mouse_x, mouse_y)
+            check_play_button(stats, play_button, mouse_x, mouse_y, aliens, bullets, ai_settings,
+                              screen, ship)
 
 
 def update_screen(ai_settings, screen, ship, bullets, aliens, stats, play_button):
@@ -201,20 +212,20 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
     if stats.ships_left > 0:
         # 将ships_left减1
         stats.ships_left -= 1
+
+        # 清空外星人列表和子弹列表
+        aliens.empty()
+        bullets.empty()
+
+        # 创建一群新的外星人，并将飞船放到屏幕底端中央
+        create_fleet(ai_settings, screen, aliens, ship)
+        ship.center_ship()
+
+        # 暂停
+        sleep(0.5)
     else:
         print("Ship hit!!!")
         stats.game_active = False
-
-    # 清空外星人列表和子弹列表
-    aliens.empty()
-    bullets.empty()
-
-    # 创建一群新的外星人，并将飞船放到屏幕底端中央
-    create_fleet(ai_settings, screen, aliens, ship)
-    ship.center_ship()
-
-    # 暂停
-    sleep(0.5)
 
 
 def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
