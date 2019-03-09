@@ -90,7 +90,7 @@ def check_events(ship, ai_settings, screen, bullets, stats, play_button, aliens)
                               screen, ship)
 
 
-def update_screen(ai_settings, screen, ship, bullets, aliens, stats, play_button):
+def update_screen(ai_settings, screen, ship, bullets, aliens, stats, play_button, sb):
     """
     更新屏幕上的图像，并切换到新屏幕
 
@@ -102,12 +102,15 @@ def update_screen(ai_settings, screen, ship, bullets, aliens, stats, play_button
     :param aliens: 外星人
     :param stats: 状态
     :param play_button: play按钮
+    :param sb: 记分牌
     """
 
     # 每次循环时都重绘屏幕
     screen.fill(ai_settings.bg_color)
     ship.blitme()
     aliens.draw(screen)
+    # 显示得分
+    sb.show_score()
 
     # 如果游戏处于非活动状态，就绘制Play按钮
     if not stats.game_active:
