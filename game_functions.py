@@ -87,11 +87,15 @@ def update_bullets(ai_settings, screen, ship, aliens, bullets):
         if bullet.rect.bottom < 0:
             bullets.remove(bullet)
     # print(len(bullets))
+    check_bullet_alien_collisions(ai_settings, aliens, bullets, screen, ship)
+
+
+def check_bullet_alien_collisions(ai_settings, aliens, bullets, screen, ship):
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
     # print(collisions)
     if len(aliens) == 0:
+        bullets.empty()
         create_fleet(ai_settings, screen, aliens, ship)
-
 
 
 def get_number_aliens_x(ai_settings, alien_width):
