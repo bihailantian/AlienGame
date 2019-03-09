@@ -65,8 +65,8 @@ def check_play_button(stats, play_button, mouse_x, mouse_y, aliens, bullets, ai_
         pygame.mouse.set_visible(False)
         # 重置游戏统计信息
         stats.reset_stats()
-        print("重置游戏统计信息", stats.score)
         sb.prep_score()
+
         stats.game_active = True
         # 清空外星人列表和子弹列表
         aliens.empty()

@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
-import os
-
 import pygame
 
 
@@ -13,8 +11,8 @@ class Ship:
         self.screen = screen
         self.ai_settings = ai_settings
         # 加载飞船图像并获取其外接矩形
-        print("路径：", os.getcwd())
-        print("路径2：", os.path.abspath('..'))
+        # print("路径：", os.getcwd())
+        # print("路径2：", os.path.abspath('..'))
         self.image = pygame.image.load("images/ship.bmp")
         self.rect = self.image.get_rect()
         self.screen_rect = screen.get_rect()

@@ -26,7 +26,7 @@ class Scoreboard:
         round_score = int(round(self.stats.score, -1))
         # 千位分隔符
         score_str = "{:,}".format(round_score)
-        print("积分", score_str)
+        # print("积分", score_str)
         self.score_image = self.font.render(score_str, True, self.text_color,
                                             self.ai_settings.bg_color)
 
