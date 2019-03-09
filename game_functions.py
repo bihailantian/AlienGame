@@ -48,7 +48,8 @@ def check_keydown_events(event, ship, ai_settings, screen, bullets):
 def check_play_button(stats, play_button, mouse_x, mouse_y, aliens, bullets, ai_settings, screen,
                       ship):
     """在玩家单击Play按钮时开始新游戏"""
-    if play_button.rect.collidepoint(mouse_x, mouse_y):
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
         # 重置游戏统计信息
         stats.reset_stats()
         stats.game_active = True
