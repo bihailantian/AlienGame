@@ -40,7 +40,7 @@ def run_game():
     # 开始游戏的主循环
     while True:
         # 监视键盘和鼠标事件
-        gf.check_events(ship, ai_settings, screen, bullets, stats, play_button, aliens)
+        gf.check_events(ship, ai_settings, screen, bullets, stats, play_button, aliens, sb)
         if stats.game_active:
             ship.update()
             gf.update_bullets(ai_settings, screen, ship, aliens, bullets, stats, sb)

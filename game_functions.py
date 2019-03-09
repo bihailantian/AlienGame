@@ -25,7 +25,7 @@ def fire_bullet(bullets, ai_settings, screen, ship):
         bullets.add(new_bullet)
 
 
-def check_keydown_events(event, ship, ai_settings, screen, bullets, stats, play_button, aliens):
+def check_keydown_events(event, ship, ai_settings, screen, bullets, stats, play_button, aliens, sb):
     """
     响应按键
 
@@ -37,6 +37,7 @@ def check_keydown_events(event, ship, ai_settings, screen, bullets, stats, play_
     :param stats: 状态
     :param play_button: 开始按钮
     :param aliens: 外星人群
+    :param sb: 积分牌
     """
     if event.key == pygame.K_RIGHT:
         ship.move_right = True
@@ -50,11 +51,11 @@ def check_keydown_events(event, ship, ai_settings, screen, bullets, stats, play_
         mouse_x, mouse_y = play_button.rect.centerx, play_button.rect.centery
         print("您点p按键", mouse_x, mouse_y)
         check_play_button(stats, play_button, mouse_x, mouse_y, aliens, bullets, ai_settings,
-                          screen, ship)
+                          screen, ship, sb)
 
 
 def check_play_button(stats, play_button, mouse_x, mouse_y, aliens, bullets, ai_settings, screen,
-                      ship):
+                      ship, sb):
     """在玩家单击Play按钮时开始新游戏"""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
@@ -64,6 +65,8 @@ def check_play_button(stats, play_button, mouse_x, mouse_y, aliens, bullets, ai_
         pygame.mouse.set_visible(False)
         # 重置游戏统计信息
         stats.reset_stats()
+        print("重置游戏统计信息", stats.score)
+        sb.prep_score()
         stats.game_active = True
         # 清空外星人列表和子弹列表
         aliens.empty()
@@ -74,7 +77,7 @@ def check_play_button(stats, play_button, mouse_x, mouse_y, aliens, bullets, ai_
         ship.center_ship()
 
 
-def check_events(ship, ai_settings, screen, bullets, stats, play_button, aliens):
+def check_events(ship, ai_settings, screen, bullets, stats, play_button, aliens, sb):
     """响应按键和鼠标事件"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -82,7 +85,7 @@ def check_events(ship, ai_settings, screen, bullets, stats, play_button, aliens)
 
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(event, ship, ai_settings, screen, bullets, stats, play_button,
-                                 aliens)
+                                 aliens, sb)
 
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
@@ -90,7 +93,7 @@ def check_events(ship, ai_settings, screen, bullets, stats, play_button, aliens)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             check_play_button(stats, play_button, mouse_x, mouse_y, aliens, bullets, ai_settings,
-                              screen, ship)
+                              screen, ship, sb)
 
 
 def update_screen(ai_settings, screen, ship, bullets, aliens, stats, play_button, sb):
