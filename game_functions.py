@@ -79,16 +79,19 @@ def update_screen(ai_settings, screen, ship, bullets, aliens):
     pygame.display.flip()
 
 
-def update_bullets(aliens, bullets):
+def update_bullets(ai_settings, screen, ship, aliens, bullets):
     """更新子弹位置并删除消失在屏幕的子弹"""
     bullets.update()
     # 删除已消失的子弹
     for bullet in bullets.copy():
         if bullet.rect.bottom < 0:
             bullets.remove(bullet)
-    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
-    print(collisions)
     # print(len(bullets))
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    # print(collisions)
+    if len(aliens) == 0:
+        create_fleet(ai_settings, screen, aliens, ship)
+
 
 
 def get_number_aliens_x(ai_settings, alien_width):
@@ -123,6 +126,7 @@ def get_number_rows(ai_settings, alien_height, ship_height):
 
 
 def create_alien(ai_settings, alien_number, aliens, screen, number_row):
+    """创建外星人"""
     alien = Alien(ai_settings, screen)
     alien_width = alien.rect.width
     alien_height = alien.rect.height
