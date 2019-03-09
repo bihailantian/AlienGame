@@ -41,6 +41,8 @@ def check_keydown_events(event, ship, ai_settings, screen, bullets):
         ship.move_left = True
     elif event.key == pygame.K_SPACE:
         fire_bullet(bullets, ai_settings, screen, ship)
+    elif event.key == pygame.K_q:
+        sys.exit()
 
 
 def check_events(ship, ai_settings, screen, bullets):
@@ -179,19 +181,25 @@ def check_fleet_edges(ai_settings, aliens):
 def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
     """响应被外星人撞到的飞船"""
     print("Ship hit!!!")
-    # 将ships_left减1
-    stats.ships_left -= 1
 
-    # 清空外星人列表和子弹列表
-    aliens.empty()
-    bullets.empty()
+    if stats.ships_left > 0:
+        # 将ships_left减1
+        stats.ships_left -= 1
+        stats.game_active = True
 
-    # 创建一群新的外星人，并将飞船放到屏幕底端中央
-    create_fleet(ai_settings, screen, aliens, ship)
-    ship.center_ship()
+        # 清空外星人列表和子弹列表
+        aliens.empty()
+        bullets.empty()
 
-    # 暂停
-    sleep(0.5)
+        # 创建一群新的外星人，并将飞船放到屏幕底端中央
+        create_fleet(ai_settings, screen, aliens, ship)
+        ship.center_ship()
+
+        # 暂停
+        sleep(0.5)
+
+    else:
+        stats.game_activity = False
 
 
 def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
